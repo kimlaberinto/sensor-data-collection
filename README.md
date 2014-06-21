@@ -13,13 +13,13 @@ To Do
 - [x] Modifable Button Pin (easy)
 - [x] Modifable led Pin (easy)
  - [ ] Possibly make if unnecessary (check if ledPIN is null or something)
-- [ ] Add running count, will make it easier to parse through data
+- [x] Add running count, will make it easier to parse through data
 
  - [ ] Settings List
-   - [ ] Number of sensorValues (for each sensor) per button press
+   - [x] Number of sensorValues (for each sensor) per button press
    - [ ] Spit out all sensorValues or average them out
    - [ ] Y/N Normalized (if Y reference taken and minused from values)
-   - [ ] Delay between readings of the sensorValues
+   - [x] Delay between readings of the sensorValues
 
 - [x] Customizable Sensor Pin List
 - [x] implement runningSum Array
