@@ -11,7 +11,7 @@ int sensorPinArray[numberPins] = {A0, A1}; //Insert which pins to read from
 int sensorTypeArray[numberPins] = {CAPACITANCE, CAPACITANCE}; //Sensor types in order
 
 
-//ledPin
+//ledPin //If no ledPin available, feel free to also use LEDBUILT_IN
 const int ledPin = 8;
 
 //Variables
@@ -31,7 +31,7 @@ void setup() {
   
   pinMode(ledPin, OUTPUT);
     
-  //Wait 5000 milliseconds before reading;
+  //Wait 5000 milliseconds before reading. Gives time for you until the tests to create the reference values. Feel free to disable if you wish
   for (int i = 0; i<10; i++) {
     digitalWrite(ledPin, HIGH);
     delay(250);
@@ -74,6 +74,7 @@ void collectAndPrintReadings() {
     runningSumArray[i] = 0;
   }
 
+  
   for (int n=0; n<numberTests; n++) {
 
     if(n%2 == 0) { //ledPin blinks while taking readings
