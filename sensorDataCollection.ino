@@ -8,8 +8,16 @@ int refA, refB;       //reference values to remove offset
 
 //Indicator Pin
 
+//runningSum Array
+
 //Settings
 //num of readings per averaging
+
+
+//Constants
+int ANALOG = 0;
+int CAPACITANCE = 1;
+
 
 
 void setup() {
@@ -63,6 +71,7 @@ void collectAndPrintReadings() {
 
     runningSumA += valueA;
     runningSumB += valueB;
+
     delay(100);
 
     if (n==19) { //last test
@@ -85,3 +94,29 @@ void loop() {
 
 }
 
+
+
+//TO IMPLEMENT ONCE SENSOR PIN ARRAY IS DONE
+int readPin(int pin, int sensorType) { //returns sensorValue
+  // if sensorType == ANALOG, if it's a normal analog type of sensor, use readAnalog(pin).
+  // if sensorType == CAPACITANCE, if a capacitance sensor, ADCTouch.read(pin) or use some library to read it
+  // Feel free to add other sensor types and other ways to read the pin.
+
+  int sensorValue;
+
+  if(sensorType == ANALOG) {
+    sensorValue = analogRead(pin);
+  } else if (sensorype == CAPACITANCE) {
+    sensorValue = ADCTouch.read(pin);
+    sensorValue -= refA;
+  }
+
+  if (sensorValue == null) {
+    Serial.print("ERROR: sensorValue null. pin:")
+    Serial.print(pin);
+    Serial.print(", sensorType:");
+    Serial.print(sensorType);
+  }
+
+  return sensorValue;
+}

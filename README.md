@@ -19,8 +19,11 @@ To Do
    - [ ] Number of sensorValues (for each sensor) per button press
    - [ ] Spit out all sensorValues or average them out
    - [ ] Y/N Normalized (if Y reference taken and minused from values)
+   - [ ] Delay between readings of the sensorValues
 
 - [ ] Customizable Sensor Pin List
+- [ ]
+- [ ] implement runningSum Array
 
 - [?] Maybe add print out min/max per button press
 
