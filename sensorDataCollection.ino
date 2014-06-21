@@ -37,8 +37,20 @@ void setup() {
   }
 
   //create reference values to account for the capacitance of the pad itself
+  //Note: manually reads the pins instead of the readPin(pin, type) function
   for (int i=0; i<numberPins; i++) {
-    sensorReferenceArray[i] = ADCTouch.read(sensorPinArray[i], 500);
+    if (sensorTypeArray[i] == ANALOG) {
+      sensorReferenceArray[i] = analogRead(sensorPinArray[i]);
+    } else if (sensorTypeArray[i] == CAPACITANCE) {
+      sensorReferenceArray[i] = ADCTouch.read(sensorPinArray[i], 500);
+    } else {
+      Serial.print("ERROR: sensor type not found. Cannot reference, autoset to 0. ");
+      Serial.print(sensorPinArray[i]);
+      Serial.print(" pin, type: ");
+      Serial.print(sensorTypeArray[i]);
+
+      sensorReferenceArray[i] = 0;
+    }
   }
 
   Serial.println("sensorDataCollection initialized.");
@@ -62,7 +74,7 @@ void collectAndPrintReadings() {
 
   for (int n=0; n<20; n++) {
 
-    if(n%2 == 0) { //ledPin flashes while taking readings
+    if(n%2 == 0) { //ledPin blinks while taking readings
       digitalWrite(ledPin, LOW);
     } else {
       digitalWrite(ledPin, HIGH);
