@@ -23,11 +23,11 @@ int t = 0; //running count, names each reading as a specific number
 //Settings
 //These numbers multiplied togeher should give the duration of the reading (in ms ofcourse), would probably be longer though due to other factors in the loop
 //For a large number of Tests, take into account of runningSumArray overflow.
-const int numberTests = 10; //number of tests in a reading
-const int testDelay = 100; //milliseconds between tests during the reading
+const int numberTests = 500; //number of tests in a reading
+const int testDelay = 1; //milliseconds between tests during the reading
 
-const boolean testPrint = false; //if true print out the values of each test during a reading
-const boolean avgPrint = true; //if true, print out the average at the end of the reading
+const boolean testPrint = true; //if true print out the values of each test during a reading
+const boolean avgPrint = false; //if true, print out the average at the end of the reading
 
 void setup() {
   Serial.begin(9600);
@@ -87,13 +87,13 @@ void collectAndPrintReadings() {
       digitalWrite(ledPin, HIGH);
     }
 
-    if (testPrint) { Serial.print(t); Serial.print(": "); }
+    if (testPrint) { Serial.print(t); Serial.print("\t"); }
     for (int i=0; i<numberPins; i++) {
         int sensorValue = readPin(sensorPinArray[i], sensorTypeArray[i]);
         sensorValue -= sensorReferenceArray[i];
         if (testPrint) {
           Serial.print(sensorValue);
-          Serial.print("\t");
+          if (i!=(numberPins-1)) { Serial.print("\t"); }
         }
         runningSumArray[i] += sensorValue;
     }
