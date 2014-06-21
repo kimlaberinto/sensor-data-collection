@@ -23,10 +23,10 @@ int t = 0; //running count, names each reading as a specific number
 //Settings
 //These numbers multiplied togeher should give the duration of the reading (in ms ofcourse), would probably be longer though due to other factors in the loop
 //For a large number of Tests, take into account of runningSumArray overflow.
-const int numberTests = 200; //number of tests in a reading
-const int testDelay = 0; //milliseconds between tests during the reading
+const int numberTests = 10; //number of tests in a reading
+const int testDelay = 100; //milliseconds between tests during the reading
 
-const boolean testPrint = true; //if true print out the values of each test during a reading
+const boolean testPrint = false; //if true print out the values of each test during a reading
 const boolean avgPrint = true; //if true, print out the average at the end of the reading
 
 void setup() {
