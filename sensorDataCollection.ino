@@ -2,23 +2,30 @@
 
 
 //Constants
-int ANALOG = 0;
-int CAPACITANCE = 1;
+const int ANALOG = 0;
+const int CAPACITANCE = 1;
 
 //Sensors
 const int numberPins = 2; //Number of Pins
 int sensorPinArray[numberPins] = {A0, A1}; //Insert which pins to read from
 int sensorTypeArray[numberPins] = {CAPACITANCE, CAPACITANCE}; //Sensor types in order
-int sensorReferenceArray[numberPins]; //reference values to remove offset, normalization
+
 
 //ledPin
 const int ledPin = 8;
 
-//runningSum Array
+//Variables
 int runningSumArray[2];
+int sensorReferenceArray[numberPins]; //reference values to remove offset, normalization
+
+int t = 0; //running count, names each reading as a specific number
 
 //Settings
-//num of readings per averaging
+//These numbers multiplied togeher give the duration of the reading
+const int numberTests = 20; //number of tests in a reading
+const int testDelay = 100; //milliseconds between tests during the reading
+
+
 
 
 
@@ -55,12 +62,11 @@ void waitForPress() {
 }
 
 void collectAndPrintReadings() {
-
   for (int i=0; i<numberPins; i++) {
     runningSumArray[i] = 0;
   }
 
-  for (int n=0; n<20; n++) {
+  for (int n=0; n<numberTests; n++) {
 
     if(n%2 == 0) { //ledPin flashes while taking readings
       digitalWrite(ledPin, LOW);
@@ -79,12 +85,14 @@ void collectAndPrintReadings() {
     }
     Serial.println("");
 
-    delay(100);
+    delay(testDelay);
 
-    if (n==19) { //Last test
-      Serial.print("Reading: ");
+    if (n==(numberTests-1)) { //Last test
+      Serial.print("reading ");
+      Serial.print(t);
+      Serial.print(" : ");
       for (int i=0; i<numberPins; i++) {
-        float average = runningSumArray[i]/20.0;
+        float average = runningSumArray[i]/float(numberTests);
         Serial.print(sensorPinArray[i]);
         Serial.print(" pin avg : ");
         Serial.print(average);
@@ -100,7 +108,7 @@ void loop() {
   digitalWrite(ledPin, HIGH);
   waitForPress();
   collectAndPrintReadings();
-
+  t++;
 }
 
 
