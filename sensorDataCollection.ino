@@ -1,45 +1,47 @@
 #include <ADCTouch.h> //Single Pin Capacitance Sensor Library
 
-int refA, refB;       //reference values to remove offset
-
-//Sensor Pins
-
-//ledPin
-
-//Indicator Pin
-
-//runningSum Array
-
-//Settings
-//num of readings per averaging
-
 
 //Constants
 int ANALOG = 0;
 int CAPACITANCE = 1;
 
+//Sensors
+const int numberPins = 2; //Number of Pins
+int sensorPinArray[numberPins] = {A0, A1}; //Insert which pins to read from
+int sensorTypeArray[numberPins] = {CAPACITANCE, CAPACITANCE}; //Sensor types in order
+int sensorReferenceArray[numberPins]; //reference values to remove offset, normalization
+
+//ledPin
+const int ledPin = 8;
+
+//runningSum Array
+int runningSumArray[2];
+
+//Settings
+//num of readings per averaging
+
 
 
 void setup() {
-
-
-    Serial.begin(9600);
+  Serial.begin(9600);
+  Serial.println("sensorDataCollection initializing... ");
+  
+  pinMode(ledPin, OUTPUT);
     
-    pinMode(5, OUTPUT);
-    pinMode(6, OUTPUT);
-    pinMode(8, OUTPUT);
-    
-    for (int i = 0; i<10; i++) {
-      digitalWrite(8, HIGH);
-      delay(250);
-      digitalWrite(8, LOW);
-      delay(250);
-    }
+  //Wait 5000 milliseconds before reading;
+  for (int i = 0; i<10; i++) {
+    digitalWrite(ledPin, HIGH);
+    delay(250);
+    digitalWrite(ledPin, LOW);
+    delay(250);
+  }
 
-    //create reference values to account for the capacitance of the pad itself
-    refA = ADCTouch.read(A1, 500);
-    refB = ADCTouch.read(A0, 500);
+  //create reference values to account for the capacitance of the pad itself
+  for (int i=0; i<numberPins; i++) {
+    sensorReferenceArray[i] = ADCTouch.read(sensorPinArray[i], 500);
+  }
 
+  Serial.println("sensorDataCollection initialized.");
 } 
 
 //wait until button pressed before continuing
@@ -53,50 +55,55 @@ void waitForPress() {
 }
 
 void collectAndPrintReadings() {
-  float runningSumA = 0;
-  float runningSumB = 0;
+
+  for (int i=0; i<numberPins; i++) {
+    runningSumArray[i] = 0;
+  }
+
   for (int n=0; n<20; n++) {
 
-    if(n%2 == 0) {
-      digitalWrite(8, LOW);
+    if(n%2 == 0) { //ledPin flashes while taking readings
+      digitalWrite(ledPin, LOW);
     } else {
-      digitalWrite(8, HIGH);
+      digitalWrite(ledPin, HIGH);
     }
 
-    int valueA = ADCTouch.read(A1);
-    int valueB = ADCTouch.read(A0);
+    Serial.print("values: ");
+    for (int i=0; i<numberPins; i++) {
+      int sensorValue = readPin(sensorPinArray[i], sensorTypeArray[i]);
+      sensorValue -= sensorReferenceArray[i];
 
-    valueA -= refA;
-    valueB -= refB;
-
-    runningSumA += valueA;
-    runningSumB += valueB;
+      Serial.print(sensorValue);
+      Serial.print("\t");
+      runningSumArray[i] += sensorValue;
+    }
+    Serial.println("");
 
     delay(100);
 
-    if (n==19) { //last test
-      float averageA = runningSumA/20.0;
-      float averageB = runningSumB/20.0;
-      Serial.print("Reading: A avg: ");
-      Serial.print(averageA);
-      Serial.print(", B avg: ");
-      Serial.println(averageB);
+    if (n==19) { //Last test
+      Serial.print("Reading: ");
+      for (int i=0; i<numberPins; i++) {
+        float average = runningSumArray[i]/20.0;
+        Serial.print(sensorPinArray[i]);
+        Serial.print(" pin avg : ");
+        Serial.print(average);
+        Serial.print("  ");
       }
+      Serial.println(""); //print newline
     }
   }
 }
 
 void loop() {
 
-  digitalWrite(8, HIGH);
+  digitalWrite(ledPin, HIGH);
   waitForPress();
   collectAndPrintReadings();
 
 }
 
 
-
-//TO IMPLEMENT ONCE SENSOR PIN ARRAY IS DONE
 int readPin(int pin, int sensorType) { //returns sensorValue
   // if sensorType == ANALOG, if it's a normal analog type of sensor, use readAnalog(pin).
   // if sensorType == CAPACITANCE, if a capacitance sensor, ADCTouch.read(pin) or use some library to read it
@@ -106,16 +113,15 @@ int readPin(int pin, int sensorType) { //returns sensorValue
 
   if(sensorType == ANALOG) {
     sensorValue = analogRead(pin);
-  } else if (sensorype == CAPACITANCE) {
+  } else if (sensorType == CAPACITANCE) {
     sensorValue = ADCTouch.read(pin);
-    sensorValue -= refA;
-  }
-
-  if (sensorValue == null) {
-    Serial.print("ERROR: sensorValue null. pin:")
+  } else {
+    Serial.print("ERROR, sensorType not found: sensorValue: ");
+    Serial.print(sensorValue);
+    Serial.print(", pin:");
     Serial.print(pin);
     Serial.print(", sensorType:");
-    Serial.print(sensorType);
+    Serial.println(sensorType);
   }
 
   return sensorValue;

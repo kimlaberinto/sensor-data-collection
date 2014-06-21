@@ -10,8 +10,8 @@ The goal of this is to try to make it easier to collect data from sensors. Perso
 To Do
 -----
 
-- [ ] Modifable Button Pin (easy)
-- [ ] Modifable led Pin (easy)
+- [x] Modifable Button Pin (easy)
+- [x] Modifable led Pin (easy)
  - [ ] Possibly make if unnecessary (check if ledPIN is null or something)
 - [ ] Add running count, will make it easier to parse through data
 
@@ -21,9 +21,8 @@ To Do
    - [ ] Y/N Normalized (if Y reference taken and minused from values)
    - [ ] Delay between readings of the sensorValues
 
-- [ ] Customizable Sensor Pin List
-- [ ]
-- [ ] implement runningSum Array
+- [x] Customizable Sensor Pin List
+- [x] implement runningSum Array
 
 - [?] Maybe add print out min/max per button press
 
