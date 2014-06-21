@@ -21,9 +21,12 @@ int sensorReferenceArray[numberPins]; //reference values to remove offset, norma
 int t = 0; //running count, names each reading as a specific number
 
 //Settings
-//These numbers multiplied togeher give the duration of the reading (in ms ofcourse)
-const int numberTests = 20; //number of tests in a reading
-const int testDelay = 100; //milliseconds between tests during the reading
+//These numbers multiplied togeher should give the duration of the reading (in ms ofcourse)
+const int numberTests = 200; //number of tests in a reading
+const int testDelay = 0; //milliseconds between tests during the reading
+
+const boolean testPrint = true; //if true print out the values of each test during a reading
+const boolean avgPrint = true; //if true, print out the average at the end of the reading
 
 void setup() {
   Serial.begin(9600);
@@ -82,20 +85,24 @@ void collectAndPrintReadings() {
       digitalWrite(ledPin, HIGH);
     }
 
-    Serial.print("values: ");
-    for (int i=0; i<numberPins; i++) {
-      int sensorValue = readPin(sensorPinArray[i], sensorTypeArray[i]);
-      sensorValue -= sensorReferenceArray[i];
+    if (testPrint == true) {
+      Serial.print("reading ");
+      Serial.print(t);
+      Serial.print(" values: ");
+      for (int i=0; i<numberPins; i++) {
+        int sensorValue = readPin(sensorPinArray[i], sensorTypeArray[i]);
+        sensorValue -= sensorReferenceArray[i];
 
-      Serial.print(sensorValue);
-      Serial.print("\t");
-      runningSumArray[i] += sensorValue;
+        Serial.print(sensorValue);
+        Serial.print("\t");
+        runningSumArray[i] += sensorValue;
+      }
+      Serial.println("");
     }
-    Serial.println("");
 
     delay(testDelay);
 
-    if (n==(numberTests-1)) { //Last test
+    if (n==(numberTests-1) && avgPrint == true) { //Last test
       Serial.print("reading ");
       Serial.print(t);
       Serial.print(" : ");
@@ -108,6 +115,7 @@ void collectAndPrintReadings() {
       }
       Serial.println(""); //print newline
     }
+
   }
 }
 
