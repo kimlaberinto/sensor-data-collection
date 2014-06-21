@@ -15,13 +15,14 @@ int sensorTypeArray[numberPins] = {CAPACITANCE, CAPACITANCE}; //Sensor types in 
 const int ledPin = 8;
 
 //Variables
-int runningSumArray[2];
+long runningSumArray[2];
 int sensorReferenceArray[numberPins]; //reference values to remove offset, normalization
 
 int t = 0; //running count, names each reading as a specific number
 
 //Settings
-//These numbers multiplied togeher should give the duration of the reading (in ms ofcourse)
+//These numbers multiplied togeher should give the duration of the reading (in ms ofcourse), would probably be longer though due to other factors in the loop
+//For a large number of Tests, take into account of runningSumArray overflow.
 const int numberTests = 200; //number of tests in a reading
 const int testDelay = 0; //milliseconds between tests during the reading
 
@@ -86,33 +87,31 @@ void collectAndPrintReadings() {
       digitalWrite(ledPin, HIGH);
     }
 
-    if (testPrint == true) {
-      Serial.print("reading ");
-      Serial.print(t);
-      Serial.print(" values: ");
-      for (int i=0; i<numberPins; i++) {
+    if (testPrint) { Serial.print(t); Serial.print(": "); }
+    for (int i=0; i<numberPins; i++) {
         int sensorValue = readPin(sensorPinArray[i], sensorTypeArray[i]);
         sensorValue -= sensorReferenceArray[i];
-
-        Serial.print(sensorValue);
-        Serial.print("\t");
+        if (testPrint) {
+          Serial.print(sensorValue);
+          Serial.print("\t");
+        }
         runningSumArray[i] += sensorValue;
-      }
-      Serial.println("");
     }
+    if (testPrint) { Serial.println(""); }
 
     delay(testDelay);
 
     if (n==(numberTests-1) && avgPrint == true) { //Last test
       Serial.print("reading ");
       Serial.print(t);
-      Serial.print(" : ");
+      Serial.print(": \t");
       for (int i=0; i<numberPins; i++) {
         float average = runningSumArray[i]/float(numberTests); //convert int to float to allow for decimals in the averaging
+        Serial.print("pin");
         Serial.print(sensorPinArray[i]);
-        Serial.print(" pin avg : ");
+        Serial.print(" avg : ");
         Serial.print(average);
-        Serial.print("  ");
+        Serial.print("\t");
       }
       Serial.println(""); //print newline
     }
