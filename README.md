@@ -13,6 +13,7 @@ To Do
 - [ ] Modifable Button Pin (easy)
 - [ ] Modifable led Pin (easy)
  - [ ] Possibly make if unnecessary (check if ledPIN is null or something)
+- [ ] Add running count, will make it easier to parse through data
 
  - [ ] Settings List
    - [ ] Number of sensorValues (for each sensor) per button press
@@ -20,3 +21,10 @@ To Do
    - [ ] Y/N Normalized (if Y reference taken and minused from values)
 
 - [ ] Customizable Sensor Pin List
+
+- [?] Maybe add print out min/max per button press
+
+- [ ] Write a better README
+  - [ ] Improve About section
+  - [ ] Add How To Use section
+  - [ ] Add examples of readings
