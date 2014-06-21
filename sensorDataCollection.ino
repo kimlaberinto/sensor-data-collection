@@ -21,13 +21,9 @@ int sensorReferenceArray[numberPins]; //reference values to remove offset, norma
 int t = 0; //running count, names each reading as a specific number
 
 //Settings
-//These numbers multiplied togeher give the duration of the reading
+//These numbers multiplied togeher give the duration of the reading (in ms ofcourse)
 const int numberTests = 20; //number of tests in a reading
 const int testDelay = 100; //milliseconds between tests during the reading
-
-
-
-
 
 void setup() {
   Serial.begin(9600);
@@ -92,7 +88,7 @@ void collectAndPrintReadings() {
       Serial.print(t);
       Serial.print(" : ");
       for (int i=0; i<numberPins; i++) {
-        float average = runningSumArray[i]/float(numberTests);
+        float average = runningSumArray[i]/float(numberTests); //convert int to float to allow for decimals in the averaging
         Serial.print(sensorPinArray[i]);
         Serial.print(" pin avg : ");
         Serial.print(average);
