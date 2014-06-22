@@ -10,7 +10,6 @@ const int numberPins = 2; //Number of Pins
 int sensorPinArray[numberPins] = {A0, A1}; //Insert which pins to read from
 int sensorTypeArray[numberPins] = {CAPACITANCE, CAPACITANCE}; //Sensor types in order
 
-
 //ledPin //If no ledPin available, feel free to also use LEDBUILT_IN
 const int ledPin = 8;
 
@@ -31,7 +30,8 @@ void setup() {
   
   pinMode(ledPin, OUTPUT);
     
-  //Wait 5000 milliseconds before reading. Gives time for you until the tests to create the reference values. Feel free to disable if you wish
+  //Wait 5000 milliseconds before reading. Gives time for you until the tests to create the reference values. 
+  //Feel free to disable if you wish. Somewhat only comestic
   for (int i = 0; i<10; i++) {
     digitalWrite(ledPin, HIGH);
     delay(250);
@@ -57,27 +57,35 @@ void setup() {
   }
 
   Serial.println("sensorDataCollection initialized.");
-} 
+}
 
-//wait until button pressed before continuing
+void loop() {
+  digitalWrite(ledPin, HIGH); //lights up ledPin to indicate that it's ready to do another reading
+  waitForPress();
+  collectAndPrintReading();
+  t++;
+}
+
+//Called when waiting until button pressed before continuing
 void waitForPress() {
   while(digitalRead(2)==LOW) { 
-      
       if (digitalRead(2)==HIGH) {
         return;
       }
     }
 }
 
-void collectAndPrintReadings() {
+//When called, it does a reading. It collects the test data and prints the reading.
+//By printing out each test, or by printing out the average at the end (or both)
+void collectAndPrintReading() {
   for (int i=0; i<numberPins; i++) {
     runningSumArray[i] = 0;
   }
 
-  
+  //Repeat the test a number of times to create one reading
   for (int n=0; n<numberTests; n++) {
-
-    if(n%2 == 0) { //ledPin blinks while taking readings
+    //ledPin blinks/flashes while taking the reading. Comestic, not necessary
+    if(n%2 == 0) {
       digitalWrite(ledPin, LOW);
     } else {
       digitalWrite(ledPin, HIGH);
@@ -112,16 +120,8 @@ void collectAndPrintReadings() {
   }
 }
 
-void loop() {
-
-  digitalWrite(ledPin, HIGH);
-  waitForPress();
-  collectAndPrintReadings();
-  t++;
-}
-
-
-int readPin(int pin, int sensorType) { //returns sensorValue
+//When called returns sensorValue of a given pin based on it's sensorType
+int readPin(int pin, int sensorType) { 
   // if sensorType == ANALOG, if it's a normal analog type of sensor, use readAnalog(pin).
   // if sensorType == CAPACITANCE, if a capacitance sensor, ADCTouch.read(pin) or use some library to read it
   // Feel free to add other sensor types and other ways to read the pin.
